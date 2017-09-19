@@ -1,41 +1,47 @@
-
-# coding: utf-8
-
-# In[2]:
-
 from pypokerengine.players import BasePokerPlayer
 from pypokerengine.utils.card_utils import Card, Deck
 from pypokerengine.utils.game_state_utils import restore_game_state
 from pypokerengine.api.emulator import Emulator, ActionChecker, RoundManager,MessageBuilder, Const, Event,                                       DataEncoder
 import pickle
+import tensorflow as tf
 
-
-# In[5]:
-
-from sklearn.ensemble import RandomForestClassifier
-
-
-# In[6]:
-
-get_ipython().magic('pinfo2 RandomForestClassifier')
-
-
-# In[3]:
 
 class DQNPlayer(BasePokerPlayer):
-    def __init__(self, h_size=128, debug=False, is_main=True, is_restore=True, is_train=True, is_double=False,
-                 lr=0.0001, gradient_clip_norm=200):      
-        '''
-        DQN Player, bot wich using Double-Dueling-DQN architecture
-        '''
+    '''
+    DQN Player, bot wich using Double-Dueling-DQN architecture.
+
+    Parametrs
+    ---------
+    h_size : shape of layer after conv part (also before double part too)
+
+    lr : learning rate of the optimizer
+
+    gradient_clip_norm : gradients of the loss function will be clipped by this value
+    
+    total_num_actions : the number of actions witch agent can choose
+
+    is_double : whether or not to use the double architecture
+
+    is_main : whether or not to use this agent as main (when using the dueling architecture)
+
+    is_restore : wheter or not to use pretrained weight of the network
+
+    is_train : whether or not to use this agent for training
+
+    is_debug  wheter or not to print the debug information
+    '''
+        
+    def __init__(self, h_size=128, lr=0.0001, gradient_clip_norm=500, total_num_actions=5, is_double=False,
+                 is_main=True, is_restore=False, is_train=True, debug=False):              
         self.h_size = h_size
-        self.debug = debug
+        self.lr = lr
+        self.gradient_clip_norm = gradient_clip_norm
+        self.total_num_actions = total_num_actions
+        self.is_double = is_double
         self.is_main = is_main
         self.is_restore = is_restore
         self.is_train = is_train
-        self.is_double = is_double
-        self.lr = lr
-        self.gradient_clip_norm = gradient_clip_norm
+        self.debug = debug
         
         with open('../cache/hole_card_estimation.pkl', 'rb') as f:
             self.hole_card_est = pickle.load(f)
@@ -112,7 +118,7 @@ class DQNPlayer(BasePokerPlayer):
         
         if is_restore:
             self.saver = tf.train.Saver()
-            ckpt = tf.train.get_checkpoint_state('models')
+            ckpt = tf.train.get_checkpoint_state('../cache/models/DQN/')
             self.saver.restore(self.sess, ckpt.model_checkpoint_path)
         
     def _print(self, *msg):
@@ -168,9 +174,4 @@ class DQNPlayer(BasePokerPlayer):
     def receive_round_result_message(self, winners, hand_info, round_state):
         end_stack = [s['stack'] for s in round_state['seats'] if s['uuid'] == self.uuid][0]
         self._print(['End stack:', end_stack])
-
-
-# In[ ]:
-
-
 
