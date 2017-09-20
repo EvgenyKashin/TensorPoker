@@ -1,1 +1,4 @@
 */.ipynb_checkpoints/*
+*.pyc
+log/*
+cache/models/*
