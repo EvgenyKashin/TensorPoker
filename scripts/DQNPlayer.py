@@ -5,6 +5,10 @@ from pypokerengine.api.emulator import Emulator, ActionChecker, RoundManager,Mes
 import pickle
 import tensorflow as tf
 
+import sys
+sys.path.insert(0, '../scripts/')
+from util import *
+
 
 class DQNPlayer(BasePokerPlayer):
     '''
@@ -118,7 +122,7 @@ class DQNPlayer(BasePokerPlayer):
         
         if is_restore:
             self.saver = tf.train.Saver()
-            ckpt = tf.train.get_checkpoint_state('../cache/models/DQN/')
+            ckpt = tf.train.get_checkpoint_state('../cache/models/')
             self.saver.restore(self.sess, ckpt.model_checkpoint_path)
         
     def _print(self, *msg):
@@ -147,7 +151,8 @@ class DQNPlayer(BasePokerPlayer):
         img_state = process_img(img_state)
         action_num = self.sess.run(self.predict, feed_dict={self.scalar_input: [img_state],
                                                             self.features_input: [self.features]})[0]
-        qs = self.sess.run(self.Q_out, feed_dict={self.scalar_input: [img_state]})[0]
+        qs = self.sess.run(self.Q_out, feed_dict={self.scalar_input: [img_state],
+                                                  self.features_input: [self.features]})[0]
         self._print(qs)
         action, amount = get_action_by_num(action_num, valid_actions)                    
 
