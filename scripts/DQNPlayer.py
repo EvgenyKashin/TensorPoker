@@ -122,7 +122,7 @@ class DQNPlayer(BasePokerPlayer):
         
         if is_restore:
             self.saver = tf.train.Saver()
-            ckpt = tf.train.get_checkpoint_state('../cache/models/')
+            ckpt = tf.train.get_checkpoint_state('../cache/models/DQN/')
             self.saver.restore(self.sess, ckpt.model_checkpoint_path)
         
     def _print(self, *msg):
