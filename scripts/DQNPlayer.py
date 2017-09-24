@@ -1,7 +1,7 @@
 from pypokerengine.players import BasePokerPlayer
 from pypokerengine.utils.card_utils import Card, Deck
 from pypokerengine.utils.game_state_utils import restore_game_state
-from pypokerengine.api.emulator import Emulator, ActionChecker, RoundManager,MessageBuilder, Const, Event,                                       DataEncoder
+from pypokerengine.api.emulator import Emulator, ActionChecker, RoundManager,MessageBuilder, Const, Event, DataEncoder
 import pickle
 import tensorflow as tf
 
@@ -12,7 +12,7 @@ from util import *
 
 class DQNPlayer(BasePokerPlayer):
     '''
-    DQN Player, bot wich using Double-Dueling-DQN architecture.
+    DQN Player, bot wich use Double-Dueling-DQN architecture.
 
     Parametrs
     ---------
