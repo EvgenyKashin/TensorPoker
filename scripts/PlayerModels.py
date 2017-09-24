@@ -54,12 +54,13 @@ class FoldPlayer(BasePokerPlayer):  # Do not forget to make parent class as "Bas
 class HeuristicPlayer(BasePokerPlayer):  # Do not forget to make parent class as "BasePokerPlayer"
     #  we define the logic to make an action through this method. (so this method would be the core of your AI)
     def declare_action(self, valid_actions, hole_card, round_state):
+        self.nb_player = 9
         # valid_actions format => [raise_action_info, call_action_info, fold_action_info]
         call_action_info = valid_actions[1]
         fold_action_info = valid_actions[0]
 
         community_card = round_state['community_card']
-        win_rate = estimate_hole_card_win_rate(nb_simulation=150, nb_player=self.nb_player,
+        win_rate = estimate_hole_card_win_rate(nb_simulation=100, nb_player=self.nb_player,
                                                hole_card=gen_cards(hole_card),
                                                community_card=gen_cards(community_card))
         if win_rate > 1 / float(self.nb_player) + 0.1:

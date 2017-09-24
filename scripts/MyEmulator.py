@@ -31,7 +31,7 @@ class MyEmulator(Emulator):
 #                 print(msg["valid_actions"])
                 return game_state, msg["valid_actions"], msg["hole_card"], msg["round_state"]
             
-            action, amount = next_player_algorithm.declare_action(                    msg["valid_actions"], msg["hole_card"], msg["round_state"])
+            action, amount = next_player_algorithm.declare_action(msg["valid_actions"], msg["hole_card"], msg["round_state"])
             
             game_state, messages = RoundManager.apply_action(game_state, action, amount)
             self.mailbox += messages
